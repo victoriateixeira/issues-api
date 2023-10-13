@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  node:
+    image: node:16.14
+    container_name: issue_manager
+    tty: true
+    stdin_open: true
+    command: bash
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+
+    ports:
+      - 3008:3008
+    environment:
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      MYSQL_HOST: db 
+      # PORT: '3000'
+      # HOST: issue_manager
+
+    env_file:
+       - .env 
+    networks:
+      - issue_manager_net
+
+  # Serviço que irá rodar o banco de dados
+  db:
+    container_name: issue_manager_db
+    image: mysql:8.0.23
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - 3306:3306
+      - 33060:33060
+    networks:
+      # Conecta esse serviço com a rede que criada 
+      - issue_manager_net
+
+
+networks:
+
+  issue_manager_net:
+    driver: bridge

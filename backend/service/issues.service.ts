@@ -10,14 +10,18 @@ class IssuesService {
     this.model = new IssuesModel(connection);
   }
   
-  public async getIssue(issueId: number):Promise<IIssue> {
+  public async getAllIssues():Promise<IIssue[]> {
+    const issues = this.model.getAllIssues();
+    return issues;
+  }
+  public async getIssue(issueId: number):Promise<IIssue[]> {
     const issue = this.model.getIssue(issueId);
     return issue;
   }
 
-  public async createIssue(issue: IIssue): Promise<void> {
-  
-    await this.model.createIssue(issue);
+  public async createIssue(issue: IIssue): Promise<IIssue> {
+    const newIssue = await this.model.createIssue(issue);
+    return newIssue
   }
 
   public async editIssueDescription(issueId: number, description: string): Promise<void> {

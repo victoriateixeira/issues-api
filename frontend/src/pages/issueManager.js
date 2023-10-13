@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { postAPI, requestAPI } from '../deliveryApi';
 
 
 function IssueManager() {
@@ -7,14 +8,35 @@ function IssueManager() {
  const [description, setDescription] = useState('');
  const [issuesList, setIssuesList] = useState([])
 
-//  const createIssue () => {
-  // makes an api request to create new issue
-//  }
+
+ useEffect(() => {
+  const fetchIssuesList = async () => {
+    const response = await requestAPI('/issues');
+      setIssuesList(response)
+  }
+
+  fetchIssuesList()
+}, []);
+
+
+ const createIssue = async (title, description) => {
+  const newIssue = {title, description}
+  await postAPI('issues', newIssue)
+  setIssuesList([...issuesList, newIssue])
+ }
 
   return (
     <>
     <main className="container">
       <h1>Issue Manager</h1>
+
+      <h2>Current Issues</h2>
+      <div>{issuesList.map((issue) => {
+        return <p>{issue.title}</p>
+      })}
+      </div>
+
+      <h2>Add a new issue</h2>
       <form>
         <label htmlFor="title">
           <p>Title</p>
